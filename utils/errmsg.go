@@ -56,7 +56,7 @@ var recodeText = map[string]string{
 }
 
 //函数  根据key来获取value
-func RecondText(code string) string {
+func RecodeText(code string) string {
 	str, ok := recodeText[code]
 	if ok {
 		return str
