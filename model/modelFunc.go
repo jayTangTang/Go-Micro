@@ -38,14 +38,12 @@ func GetArea() ([]Area, error) {
 		}
 
 		_, err = conn.Do("set", "areaData", areaJson)
+		fmt.Println(err)
+
 		fmt.Println("从MySQL中获取数据")
 	} else {
 		json.Unmarshal(areaByte, &areas)
 		fmt.Println("从redis中获取数据")
-	}
-
-	if err := GlobalDB.Find(&areas).Error; err != nil {
-		return areas, err
 	}
 	return areas, nil
 }

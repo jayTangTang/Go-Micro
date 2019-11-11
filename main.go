@@ -36,6 +36,7 @@ func main() {
 	{
 		//路由规范
 		r1.GET("/areas", controller.GetArea)
+		r1.GET("/session",controller.GetSession)
 	}
 
 	router.Run(":8099")
