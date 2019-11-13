@@ -10,18 +10,22 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	getArea "ihome/proto/getArea"
+	getImg "ihome/proto/getImg"
 	"context"
 	"fmt"
-	"github.com/micro/go-micro"
 	"net/http"
+	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry/consul"
-	"ihome/utils"
+
+	"ihome/service/getArea/utils"
+	"github.com/afocus/captcha"
+	"encoding/json"
+	"image/png"
 )
 
 //获取所有地区信息
 func GetArea(ctx *gin.Context) {
 	/*
-
 	resp := make(map[string]interface{})
 	defer ctx.JSON(http.StatusOK, resp)
 	//获取数据库数据
@@ -68,4 +72,40 @@ func GetSession(ctx *gin.Context) {
 	resp["errmsg"] = utils.RecodeText(utils.RECODE_LOGINERR)
 
 	ctx.JSON(http.StatusOK, resp)
+}
+
+//获取验证码图片方法
+func GetImageCd(ctx *gin.Context) {
+	//获取数据
+	uuid := ctx.Param("uuid")
+	//校验数据
+	if uuid == "" {
+		fmt.Println("获取数据错误")
+		return
+	}
+	//处理数据
+
+	//调用远程服务
+	//初始化客户端
+	consulReg := consul.NewRegistry()
+	microService := micro.NewService(
+		micro.Registry(consulReg),
+	)
+
+	microClient := getImg.NewGetImgService("go.micro.srv.getImg", microService.Client())
+	//调用远程服务
+	resp, err := microClient.MicroGetImg(context.TODO(), &getImg.Request{Uuid: uuid})
+
+	//获取数据
+	if err != nil {
+		fmt.Println("获取远端数据失败:", err)
+		ctx.JSON(http.StatusOK, resp)
+		return
+	}
+	//返回json数据
+	//反序列化拿到img数据
+	var img captcha.Image
+	json.Unmarshal(resp.Data, &img)
+
+	png.Encode(ctx.Writer, img)
 }

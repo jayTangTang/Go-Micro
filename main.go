@@ -37,7 +37,10 @@ func main() {
 		//路由规范
 		r1.GET("/areas", controller.GetArea)
 		r1.GET("/session",controller.GetSession)
-	}
+		//传参方法,url传值,form表单传值,ajax传值,路径传值
+		r1.GET("/imagecode/:uuid",controller.GetImageCd)
+	r1.GET()
+		}
 
 	router.Run(":8099")
 }
