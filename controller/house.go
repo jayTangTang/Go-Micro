@@ -11,13 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 	getArea "ihome/proto/getArea"
 	getImg "ihome/proto/getImg"
+	register"ihome/proto/register"
 	"context"
 	"fmt"
 	"net/http"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry/consul"
-
-	"ihome/service/getArea/utils"
+	"ihome/utils"
 	"github.com/afocus/captcha"
 	"encoding/json"
 	"image/png"
@@ -55,11 +55,10 @@ func GetArea(ctx *gin.Context) {
 	resp, err := microClient.MicroGetArea(context.TODO(), &getArea.Request{})
 	if err != nil {
 		fmt.Println(err)
-
 		/*ctx.JSON(http.StatusOK,resp)
 		return */
 	}
-
+	//把int 的0值  json的特性,如果字段是零值,不对这个字段做序列化
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -108,4 +107,74 @@ func GetImageCd(ctx *gin.Context) {
 	json.Unmarshal(resp.Data, &img)
 
 	png.Encode(ctx.Writer, img)
+}
+
+func GetSmscd(ctx *gin.Context) {
+	//获取数据
+	mobile := ctx.Param("mobile")
+	//获取输入的图片验证码
+	text := ctx.Query("text")
+	//获取验证码图片的uuid
+	uuid := ctx.Query("id")
+
+	//校验数据
+	if mobile == "" || text == "" || uuid == "" {
+		fmt.Println("传入数据不完整")
+		return
+	}
+
+	//处理数据  放在服务端处理
+	//初始化客户端
+	microClient := register.NewRegisterService("go.micro.srv.register", utils.GetMicroClient())
+	//调用远程客户端
+	resp, err := microClient.SmsCode(context.TODO(), &register.Request{
+		Uuid:   uuid,
+		Text:   text,
+		Mobile: mobile,
+	})
+
+	if err != nil {
+		fmt.Println("调用远程服务错误", err)
+		/*ctx.JSON(http.StatusOK,resp)
+		return*/
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
+//注册方法
+type RegStu struct {
+	Mobile   string `json:"mobile"`
+	PassWord string `json:"password"`
+	SmsCode  string `json:"sms_code"`
+}
+
+//注册业务
+func PostRet(ctx *gin.Context) {
+	//获取数据
+	/*mobile := ctx.PostForm("mobile")
+	pwd := ctx.PostForm("password")
+	smsCode := ctx.PostForm("sms_code")*/
+	var reg RegStu
+	err := ctx.Bind(&reg)
+
+	//校验数据
+	if err != nil {
+		fmt.Println("获取前端传递数据失败")
+		return
+	}
+	//处理数据  放在服务端处理
+	//初始化客户端
+	microClient := register.NewRegisterService("go.micro.srv.register", utils.GetMicroClient())
+	//调用远程服务
+	resp, err := microClient.Register(context.TODO(), &register.RegRequest{
+		Mobile:   reg.Mobile,
+		Password: reg.PassWord,
+		SmsCode:  reg.SmsCode,
+	})
+
+	if err != nil {
+		fmt.Println("调用远程服务错误", err)
+	}
+	//返回数据
+	ctx.JSON(http.StatusOK, resp)
 }

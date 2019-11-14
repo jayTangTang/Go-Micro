@@ -34,7 +34,7 @@ func (e *GetImg) MicroGetImg(ctx context.Context, req *getImg.Request, rsp *getI
 
 	//生成验证码图片
 	//rand.Seed(time.Now().UnixNano())
-	img, rnd := cap.Create(6, captcha.ALL)
+	img, rnd := cap.Create(4, captcha.NUM)
 
 	//存储验证码   redis
 	err := model.SaveImgRnd(req.Uuid, rnd)

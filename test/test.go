@@ -35,7 +35,7 @@ func main() {
 	//创建验证码图片
 	http.HandleFunc("/r", func(w http.ResponseWriter, r *http.Request) {
 		//第一个参数是验证码的位数,第二个参数是验证码的类型   cap自己生成随机数,返回给调用者
-		img, str := cap.Create(6, captcha.NUM)
+		img, str := cap.Create(4, captcha.NUM)
 		png.Encode(w, img)
 		println(str)
 	})
