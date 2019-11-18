@@ -94,7 +94,7 @@ func (e *Register) Register(ctx context.Context, req *register.RegRequest, rsp *
 
 	if smsCode != req.SmsCode {
 		rsp.Errno = utils.RECODE_SMSERR
-		rsp.Errmsg=utils.RecodeText(utils.RECODE_SMSERR)
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_SMSERR)
 		return errors.New("验证码错误")
 	}
 
@@ -102,7 +102,10 @@ func (e *Register) Register(ctx context.Context, req *register.RegRequest, rsp *
 	//给密码加密
 	pwdByte := sha256.Sum256([]byte(req.Password))
 	pwd_hash := string(pwdByte[:])
-	err = model.SaveUser(req.Mobile, pwd_hash)
+	//要把sha256得到的数据转换之后存储  转换16进制的
+	pwdHash := fmt.Sprintf("%x", pwd_hash)
+
+	err = model.SaveUser(req.Mobile, pwdHash)
 	if err != nil {
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(utils.RECODE_DBERR)
@@ -111,5 +114,27 @@ func (e *Register) Register(ctx context.Context, req *register.RegRequest, rsp *
 
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	return nil
+}
+
+//登录
+func (e *Register) Login(ctx context.Context, req *register.RegRequest, rsp *register.RegResponse) error {
+	//查询输入手机号和密码是否正确  mysql
+	//给密码加密
+	pwdByte := sha256.Sum256([]byte(req.Password))
+	pwd_hash := string(pwdByte[:])
+	//要把sha256得到的数据转换之后存储  转换16进制的
+	pwdHash := fmt.Sprintf("%x", pwd_hash)
+
+	user, err := model.CheckUser(req.Mobile, pwdHash)
+	if err != nil {
+		rsp.Errno = utils.RECODE_LOGINERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_LOGINERR)
+		return err
+	}
+	//查询成功  登录成功  把用户名存储到session中  把用户名传给web端
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	rsp.Name = user.Name
 	return nil
 }

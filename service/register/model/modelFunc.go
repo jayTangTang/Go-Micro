@@ -40,3 +40,11 @@ func GetSmsCode(phone string) (string, error) {
 	//获取数据
 	return redis.String(conn.Do("get", phone+"_code"))
 }
+
+//校验登录信息
+func CheckUser(mobile, pwd_hash string) (User, error) {
+	//连接数据库
+	var user User
+	err := GlobalDB.Where("mobile = ?",mobile).Where("password_hash = ?",pwd_hash).Find(&user).Error
+	return user, err
+}

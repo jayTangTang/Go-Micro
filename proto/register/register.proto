@@ -7,6 +7,7 @@ service Register {
     };
     rpc Register (RegRequest) returns (RegResponse) {
     };
+    rpc Login(RegRequest) returns (RegResponse) {};
 
 }
 
@@ -20,6 +21,7 @@ message RegRequest {
 message RegResponse {
     string errno = 1;
     string errmsg = 2;
+    string name = 3;
 }
 
 message Request {
@@ -31,5 +33,6 @@ message Request {
 message Response {
     string errno = 1;
     string errmsg = 2;
+
 }
 

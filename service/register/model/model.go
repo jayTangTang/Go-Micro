@@ -89,7 +89,6 @@ type OrderHouse struct {
 }
 
 var GlobalDB *gorm.DB
-var GlobalRedis redis.Pool
 
 //一个函数一个功能    最多50行
 func InitDb() error {
@@ -120,12 +119,12 @@ func InitDb() error {
 
 //初始化redis链接
 func InitRedis() {
-	GlobalRedis = redis.Pool{
-		MaxIdle:20,
-		MaxActive:50,
-		IdleTimeout:60 * 5,
+	RedisPool = redis.Pool{
+		MaxIdle:     20,
+		MaxActive:   50,
+		IdleTimeout: 60 * 5,
 		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp","127.0.0.1:6379")
+			return redis.Dial("tcp", "127.0.0.1:6379")
 		},
 	}
 }

@@ -1,51 +1,85 @@
-/*
-@Time : 19-11-13 上午9:17 
-@Author : itcast
-@File : test
-@Software: GoLand
-*/
-
 package main
 
 import (
-	"github.com/afocus/captcha"
-	"image/color"
-	"net/http"
-	"image/png"
+	"reflect"
+	"strings"
+	"strconv"
+	"fmt"
 )
 
-func main() {
-
-	//初始化实例对象
-	cap := captcha.New()
-
-	//设置字符集
-	if err := cap.SetFont("comic.ttf"); err != nil {
-		panic(err.Error())
+// Reflect String to Base Type : int
+func RefStrToInt(dst, src interface{}) {
+	// Judge data Kind
+	if reflect.TypeOf(dst).Kind() == reflect.Ptr && reflect.TypeOf(src).Kind() == reflect.Ptr {
+		dstType, dstVal := reflect.TypeOf(dst).Elem(), reflect.ValueOf(dst).Elem()
+		srcType, srcVal := reflect.TypeOf(src).Elem(), reflect.ValueOf(src).Elem()
+		// Traverse
+		for i := 0; i < srcType.NumField(); i++ {
+			// Get source StructField
+			srcSF := srcType.Field(i)
+			for j := 0; j < dstType.NumField(); j++ {
+				// Obtain destination StructField
+				dstSF := dstType.Field(j)
+				// Acquire destination Kind and source Kind
+				dstKind, srcKind := dstSF.Type.Kind(), srcSF.Type.Kind()
+				// Judge FieldName and Kind
+				if strings.EqualFold(srcSF.Name, dstSF.Name) && dstKind == srcKind {
+					// Src Assignment to Dst
+					dstVal.Field(j).Set(srcVal.Field(i))
+					break
+				} else if strings.EqualFold(srcSF.Name, dstSF.Name) && srcKind == reflect.String {
+					// destination kind is Int,Int32,Int64
+					if dstKind == reflect.Int || dstKind == reflect.Int64 || dstKind == reflect.Int32 {
+						// String convent to Int64
+						atoi, _ := strconv.Atoi(srcVal.Field(i).Interface().(string))
+						// src Assignment to dst
+						dstVal.Field(j).SetInt(int64(atoi))
+						break
+					}
+					// destination kind is Uint,Uint32,Uint64
+					if dstKind == reflect.Uint || dstKind == reflect.Uint32 || dstKind == reflect.Uint64 {
+						// String convent to Uint64
+						atoi, _ := strconv.Atoi(srcVal.Field(i).Interface().(string))
+						// src Assignment to dst
+						dstVal.Field(j).SetUint(uint64(atoi))
+						break
+					}
+				}
+			}
+		}
 	}
+}
 
-	//设置验证码图片大小
-	cap.SetSize(128, 64)
-	//设置混淆程度
-	cap.SetDisturbance(captcha.NORMAL)
-	//设置字体颜色
-	cap.SetFrontColor(color.RGBA{255, 255, 255, 255})
-	//设置背景色  background
-	cap.SetBkgColor(color.RGBA{255, 0, 0, 255}, color.RGBA{0, 0, 255, 255}, color.RGBA{0, 153, 0, 255})
-	//创建验证码图片
-	http.HandleFunc("/r", func(w http.ResponseWriter, r *http.Request) {
-		//第一个参数是验证码的位数,第二个参数是验证码的类型   cap自己生成随机数,返回给调用者
-		img, str := cap.Create(4, captcha.NUM)
-		png.Encode(w, img)
-		println(str)
-	})
+type DST struct {
+	Name  string
+	Age   int
+	Level int32
+	Grade int64
+	Score uint
+	Month uint32
+	Year  uint64
+}
 
-	http.HandleFunc("/c", func(w http.ResponseWriter, r *http.Request) {
-		str := r.URL.RawQuery
-		//调用者生成随机数,传递给cap
-		img := cap.CreateCustom(str)
-		png.Encode(w, img)
-	})
+type SRC struct {
+	Level string
+	Grade string
+	Month string
+	Year  string
+	Name  string
+	Age   string
+	Score string
+}
 
-	http.ListenAndServe(":8099", nil)
+func main() {
+	dst, src := DST{}, SRC{
+		Name:  "zs",
+		Age:   "18",
+		Score: "68",
+		Level: "33",
+		Grade: "66",
+		Month: "8",
+		Year:  "2018",
+	}
+	RefStrToInt(&dst, &src)
+	fmt.Println(dst)
 }

@@ -12,7 +12,7 @@ func GetArea()([]Area,error){
 	var areas []Area
 
 	//从缓存中获取数据  从redis中获取数据
-	//conn,err := redis.Dial("tcp","192.168.50.128:6379")
+	//conn,err := redis.Dial("tcp","127.0.0.1:6379")
 	conn := GlobalRedis.Get()
 	//关闭,释放资源
 	areaByte,_:= redis.Bytes(conn.Do("get","areaData"))

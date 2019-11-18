@@ -119,7 +119,7 @@ func InitRedis(){
 		MaxActive:50,
 		IdleTimeout:60 * 5,
 		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp","192.168.50.128:6379")
+			return redis.Dial("tcp","127.0.0.1:6379")
 		},
 	}
 }

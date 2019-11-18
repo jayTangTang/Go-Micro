@@ -9,6 +9,7 @@ import (
 	"ihome/service/getImg/model"
 	"encoding/json"
 	"ihome/service/getImg/utils"
+
 )
 
 type GetImg struct{}
@@ -28,7 +29,7 @@ func (e *GetImg) MicroGetImg(ctx context.Context, req *getImg.Request, rsp *getI
 	//设置混淆程度
 	cap.SetDisturbance(captcha.NORMAL)
 	//设置字体颜色
-	cap.SetFrontColor(color.RGBA{255, 255, 255, 255})
+	cap.SetFrontColor(color.RGBA{255, 255, 255, 255},color.RGBA{255, 0, 0, 255})
 	//设置背景色  background
 	cap.SetBkgColor(color.RGBA{255, 0, 0, 255}, color.RGBA{0, 0, 255, 255}, color.RGBA{0, 153, 0, 255})
 

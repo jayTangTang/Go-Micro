@@ -4,6 +4,7 @@ import (
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-micro"
 	"ihome/service/getImg/handler"
+
 	getImg "ihome/service/getImg/proto/getImg"
 	"github.com/micro/go-micro/registry/consul"
 	"ihome/service/getImg/model"
