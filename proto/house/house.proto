@@ -3,12 +3,18 @@ syntax = "proto3";
 package go.micro.srv.house;
 
 service House {
-    rpc PubHouse (Request) returns (Response) {};
-    rpc UploadHouseImg (ImgReq) returns (ImgResp) {};
-    rpc GetHouseInfo (GetReq) returns (GetResp) {};
-    rpc GetHouseDetail (DetailReq) returns (DetailResp) {};
-    rpc GetIndexHouse (IndexReq) returns (GetResp) {};
-    rpc SearchHouse (SearchReq) returns (GetResp) {};
+    rpc PubHouse (Request) returns (Response) {
+    };
+    rpc UploadHouseImg (ImgReq) returns (ImgResp) {
+    };
+    rpc GetHouseInfo (GetReq) returns (GetResp) {
+    };
+    rpc GetHouseDetail (DetailReq) returns (DetailResp) {
+    };
+    rpc GetIndexHouse (IndexReq) returns (GetResp) {
+    };
+    rpc SearchHouse (SearchReq) returns (GetResp) {
+    };
 }
 
 message SearchReq {

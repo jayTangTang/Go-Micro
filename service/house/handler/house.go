@@ -55,7 +55,7 @@ func (e *House) UploadHouseImg(ctx context.Context, req *house.ImgReq, resp *hou
 	resp.Errmsg = utils.RecodeText(utils.RECODE_OK)
 
 	var img house.ImgData
-	img.Url = "http://192.168.50.129:8888/" + fdfsResp.RemoteFileId
+	img.Url = "http://192.168.50.131:8888/" + fdfsResp.RemoteFileId
 
 	resp.Data = &img
 

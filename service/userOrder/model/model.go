@@ -1,5 +1,5 @@
 /*
-@Time : 19-11-10 下午4:11 
+@Time : 19-11-19 下午5:43 
 @Author : itcast
 @File : model
 @Software: GoLand
@@ -107,7 +107,6 @@ func InitDb() error {
 	db.DB().SetMaxIdleConns(50)
 	db.DB().SetMaxOpenConns(70)
 	db.DB().SetConnMaxLifetime(60 * 5)
-	db.LogMode(true)
 
 	//默认情况下表名是复数
 	db.SingularTable(true)

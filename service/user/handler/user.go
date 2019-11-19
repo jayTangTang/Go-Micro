@@ -32,7 +32,7 @@ func (e *User) MicroGetUser(ctx context.Context, req *user.Request, rsp *user.Re
 	userInfo.Mobile = myUser.Mobile
 	userInfo.RealName = myUser.Real_name
 	userInfo.IdCard = myUser.Id_card
-	userInfo.AvatarUrl = "http://192.168.50.129:8888" + myUser.Avatar_url
+	userInfo.AvatarUrl = "http://192.168.50.131:8888/" + myUser.Avatar_url
 
 	rsp.Data = &userInfo
 
@@ -63,6 +63,7 @@ func (e *User) UpdateUserName(ctx context.Context, req *user.UpdateReq, resp *us
 func (e *User) UploadAvatar(ctx context.Context, req *user.UploadReq, resp *user.UploadResp) error {
 	//存入到fastdfs中
 	fClient, _ := fdfs_client.NewFdfsClient("/etc/fdfs/client.conf")
+
 	//上传文件到fdfs
 	fdfsResp, err := fClient.UploadByBuffer(req.Avatar, req.FileExt[1:])
 	if err != nil {
@@ -71,6 +72,7 @@ func (e *User) UploadAvatar(ctx context.Context, req *user.UploadReq, resp *user
 		resp.Errmsg = utils.RecodeText(utils.RECODE_DATAERR)
 		return nil
 	}
+	fmt.Println(fdfsResp.RemoteFileId)
 
 	//把存储凭证写入数据库
 	err = model.SaveUserAvatar(req.UserName, fdfsResp.RemoteFileId)
@@ -85,7 +87,7 @@ func (e *User) UploadAvatar(ctx context.Context, req *user.UploadReq, resp *user
 	resp.Errmsg = utils.RecodeText(utils.RECODE_OK)
 
 	var uploadData user.UploadData
-	uploadData.AvatarUrl = "http://192.168.50.129:8888" + fdfsResp.RemoteFileId
+	uploadData.AvatarUrl = "http://192.168.50.131:8888/" + fdfsResp.RemoteFileId
 	resp.Data = &uploadData
 	return nil
 }

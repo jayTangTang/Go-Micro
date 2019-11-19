@@ -110,11 +110,11 @@ func GetUserHouse(userName string) ([]*house.Houses, error) {
 		houseInfo.Address = v.Address
 		houseInfo.Ctime = v.CreatedAt.Format("2006-01-02 15:04:05")
 		houseInfo.HouseId = int32(v.ID)
-		houseInfo.ImgUrl = "http://192.168.50.129:8888/" + v.Index_image_url
+		houseInfo.ImgUrl = "http://192.168.50.131:8888/" + v.Index_image_url
 		houseInfo.OrderCount = int32(v.Order_count)
 		houseInfo.Price = int32(v.Price)
 		houseInfo.RoomCount = int32(v.Room_count)
-		houseInfo.UserAvatar = "http://192.168.50.129:8888/" + user.Avatar_url
+		houseInfo.UserAvatar = "http://192.168.50.131:8888/" + user.Avatar_url
 
 		//获取地域信息
 		var area Area
@@ -156,7 +156,7 @@ func GetHouseDetail(houseId, userName string) (house.DetailData, error) {
 		houseDetail.Title = houseInfo.Title
 		houseDetail.Unit = houseInfo.Unit
 		if houseInfo.Index_image_url != "" {
-			houseDetail.ImgUrls = append(houseDetail.ImgUrls, "http://192.168.50.129:8888/"+houseInfo.Index_image_url)
+			houseDetail.ImgUrls = append(houseDetail.ImgUrls, "http://192.168.50.131:8888/"+houseInfo.Index_image_url)
 		}
 	}
 
@@ -196,7 +196,7 @@ func GetHouseDetail(houseId, userName string) (house.DetailData, error) {
 	}
 	for _, v := range imgs {
 		if len(imgs) != 0 {
-			houseDetail.ImgUrls = append(houseDetail.ImgUrls, "http://192.168.50.129:8888/"+v.Url)
+			houseDetail.ImgUrls = append(houseDetail.ImgUrls, "http://192.168.50.131:8888/"+v.Url)
 		}
 	}
 
@@ -207,7 +207,7 @@ func GetHouseDetail(houseId, userName string) (house.DetailData, error) {
 		return respData, err
 	}
 	houseDetail.UserName = user.Name
-	houseDetail.UserAvatar = "http://192.168.50.129:8888/" + user.Avatar_url
+	houseDetail.UserAvatar = "http://192.168.50.131:8888/" + user.Avatar_url
 	houseDetail.UserId = int32(user.ID)
 
 	respData.House = &houseDetail
@@ -245,12 +245,12 @@ func GetIndexHouse() ([]*house.Houses, error) {
 		houseTemp.AreaName = area.Name
 		houseTemp.Ctime = v.CreatedAt.Format("2006-01-02 15:04:05")
 		houseTemp.HouseId = int32(v.ID)
-		houseTemp.ImgUrl = "http://192.168.50.129:8888/" + v.Index_image_url
+		houseTemp.ImgUrl = "http://192.168.50.131:8888/" + v.Index_image_url
 		houseTemp.OrderCount = int32(v.Order_count)
 		houseTemp.Price = int32(v.Price)
 		houseTemp.RoomCount = int32(v.Room_count)
 		houseTemp.Title = v.Title
-		houseTemp.UserAvatar = "http://192.168.50.129:8888/" + user.Avatar_url
+		houseTemp.UserAvatar = "http://192.168.50.131:8888/" + user.Avatar_url
 
 		housesResp = append(housesResp, &houseTemp)
 	}
@@ -293,12 +293,12 @@ func SearchHouse(areaId, sd, ed, sk string) ([]*house.Houses, error) {
 		houseTemp.AreaName = area.Name
 		houseTemp.Ctime = v.CreatedAt.Format("2006-01-02 15:04:05")
 		houseTemp.HouseId = int32(v.ID)
-		houseTemp.ImgUrl = "http://192.168.50.129:8888/" + v.Index_image_url
+		houseTemp.ImgUrl = "http://192.168.50.131:8888/" + v.Index_image_url
 		houseTemp.OrderCount = int32(v.Order_count)
 		houseTemp.Price = int32(v.Price)
 		houseTemp.RoomCount = int32(v.Room_count)
 		houseTemp.Title = v.Title
-		houseTemp.UserAvatar = "http://192.168.50.129:8888/" + user.Avatar_url
+		houseTemp.UserAvatar = "http://192.168.50.131:8888/" + user.Avatar_url
 
 		housesResp = append(housesResp, &houseTemp)
 	}
